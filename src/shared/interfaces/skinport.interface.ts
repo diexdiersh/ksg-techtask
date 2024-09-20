@@ -1,13 +1,13 @@
-import {SKINPORT_CURRENCIES} from '../constants/index.js'
+import {Currency} from '../types/index.js'
 
 export interface SkinportItem {
   market_hash_name: string
-  currency: (typeof SKINPORT_CURRENCIES)[number]
+  currency: Currency
   min_price: number | null
 }
 
-export interface Item {
-  marketHashName: string
-  currency: (typeof SKINPORT_CURRENCIES)[number]
-  minPrice: number | null
+export interface ItemParam {
+  appId: number
+  tradable?: boolean
+  currency?: Currency
 }

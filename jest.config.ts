@@ -9,10 +9,14 @@ const jestConfig: JestConfigWithTsJest = {
   testEnvironment: 'node',
   roots: ['src'],
   testRegex: '.test.ts$',
+  extensionsToTreatAsEsm: ['.ts'],
+  moduleNameMapper: {
+    '^(\\.{1,2}/.*)\\.js$': '$1',
+  },
   transform: {
     '^.+\\.(t|j)s$': [
       'ts-jest',
-      {tsconfig: 'tsconfig.build.json', isolatedModules: true},
+      {tsconfig: 'tsconfig.build.json', isolatedModules: true, useESM: true},
     ],
   },
   maxConcurrency: 10,

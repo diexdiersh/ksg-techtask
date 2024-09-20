@@ -7,7 +7,6 @@ export const SKINPORT_CURRENCIES = [
   'CNY',
   'CZK',
   'DKK',
-  'EUR',
   'GBP',
   'HRK',
   'NOK',

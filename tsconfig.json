@@ -5,5 +5,5 @@
     "sourceMap": true,
     "noEmit": true
   },
-  "include": ["src/**/*.ts"]
+  "include": ["src/**/*.ts", "migration-manager/**/*.ts", "migrations/**/*.ts"]
 }

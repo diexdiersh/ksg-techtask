@@ -1,6 +1,6 @@
-import {convertCase} from './convert-case.util.js' // Adjust this to your actual file path
+import {convertCase} from './convert-case.util.js'
 
-describe('convertCase Utility Function', () => {
+describe('convertCase', () => {
   const obj = {
     first_name: 'John',
     lastName: 'Doe',
@@ -21,15 +21,15 @@ describe('convertCase Utility Function', () => {
     hobbies: ['coding', 'reading'],
   }
 
-  // const expectedKebabCase = {
-  //   first-name: 'John',
-  //   last-name: 'Doe',
-  //   contact-info: {
-  //     phone-number: '1234567890',
-  //     email-address: 'john.doe@example.com',
-  //   },
-  //   hobbies: ['coding', 'reading'],
-  // };
+  const expectedKebabCase = {
+    'first-name': 'John',
+    'last-name': 'Doe',
+    'contact-info': {
+      'phone-number': '1234567890',
+      'email-address': 'john.doe@example.com',
+    },
+    hobbies: ['coding', 'reading'],
+  }
 
   const expectedCamelCase = {
     firstName: 'John',

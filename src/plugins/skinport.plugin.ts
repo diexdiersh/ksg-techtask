@@ -1,38 +1,26 @@
-// import axios, {AxiosInstance} from 'axios'
+import axios from 'axios'
 import {FastifyInstance, FastifyPluginOptions} from 'fastify'
 import fp from 'fastify-plugin'
 
-// import {Item} from '../shared/interfaces/index.js'
-// import {SKINPORT_CURRENCIES} from '../shared/constants/index.js'
+import {SkinportApi} from '../shared/classes/index.js'
 
-// type Currency = (typeof SKINPORT_CURRENCIES)[number]
-
-// class Skinport {
-//   constructor(
-//     private readonly _url: string,
-//     private readonly _axios: AxiosInstance
-//   ) {}
-
-//   async getItems(
-//     appId: number,
-//     tradable: boolean,
-//     currency: Currency = 'EUR'
-//   ): Promise<Item[]> {
-//     return []
-
-//     const url = new URL('/items', this._url)
-
-//     this._axios.get(`${this._url}`, {
-//       params: {app_id: appId, currency, tradable},
-//     })
-//   }
-// }
-
-async function skinport(
-  _: FastifyInstance,
-  __: FastifyPluginOptions
-): Promise<void> {
-  // const instance = axios({})
+declare module 'fastify' {
+  interface FastifyInstance {
+    skinport: SkinportApi
+  }
 }
 
-export default fp(skinport, {name: 'skinport'})
+async function skinport(
+  fastify: FastifyInstance,
+  _: FastifyPluginOptions
+): Promise<void> {
+  const axiosInstance = axios.create()
+
+  const {SKINPORT_API_URL} = fastify.config
+
+  const skinportApi = new SkinportApi(SKINPORT_API_URL, axiosInstance)
+
+  fastify.decorate(skinport.name, skinportApi)
+}
+
+export default fp(skinport, {name: skinport.name})

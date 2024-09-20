@@ -9,8 +9,6 @@ import {
 } from '../constants/index.js'
 
 type SignalEvent = (typeof NODE_SIGNAL_EVENTS)[number]
-// type ErrorEvent = (typeof NODE_ERROR_EVENTS)[number]
-// type ExitEvent = (typeof NODE_EXIT_EVENTS)[number]
 
 interface ShutdownParams {
   signal?: SignalEvent
@@ -18,62 +16,63 @@ interface ShutdownParams {
   manual?: boolean
 }
 
-// Core function to handle graceful shutdown
+// Utility function to handle graceful shutdown
+// It is simplified logic of close-with-grace package
 export function setupGracefulShutdown(
   app: FastifyInstance,
   delay: number
 ): void {
   let isClosing = false
 
-  // Clean up the event listeners once the shutdown begins
   function cleanup(): void {
     NODE_SIGNAL_EVENTS.forEach(event => process.removeListener(event, onSignal))
     NODE_ERROR_EVENTS.forEach(event => process.removeListener(event, onError))
     NODE_EXIT_EVENTS.forEach(event => process.removeListener(event, onExit))
   }
 
-  // Handle signal events like SIGTERM or SIGINT
+  // Handle signal events
   function onSignal(signal: SignalEvent): void {
     handleShutdown({signal})
   }
 
-  // Handle error events like uncaught exceptions or unhandled rejections
+  // Handle error events
   function onError(err: Error): void {
     app.log.error('Error captured: ', err)
     handleShutdown({err})
   }
 
-  // Handle normal exit events like beforeExit
+  // Handle normal exit
   function onExit(): void {
     handleShutdown({})
   }
 
-  // Core logic for handling graceful shutdown
   async function handleShutdown({signal}: ShutdownParams): Promise<void> {
-    if (isClosing) return // Prevent multiple shutdown attempts
+    if (isClosing) return
     isClosing = true
 
     app.log.info(`Received ${signal || 'exit event'}. Closing gracefully...`)
 
-    cleanup() // Remove the listeners to avoid double-triggering shutdown
+    // Remove the listeners
+    cleanup()
 
     try {
-      // Set a force shutdown timeout to avoid hanging processes
       const forceShutdownTimeout = setTimeout(() => {
         app.log.warn('Forcing shutdown due to timeout.')
-        process.exit(1) // Exit with error if graceful shutdown takes too long
+        // Exit with error if graceful shutdown takes too long
+        process.exit(1)
       }, delay).unref()
 
-      // Gracefully close the Fastify instance
+      // Close the Fastify instance
       await app.close()
 
-      // Clear the forced shutdown timeout if the app closes in time
       clearTimeout(forceShutdownTimeout)
       app.log.info('Closed all connections. Exiting...')
-      process.exit(0) // Exit cleanly after successful shutdown
+      // Exit cleanly after successful shutdown
+      process.exit(0)
     } catch (shutdownError) {
       app.log.error('Error during shutdown:', shutdownError)
-      process.exit(1) // Exit with error code if shutdown fails
+      // Exit with error code if shutdown fails
+      process.exit(1)
     }
   }
 

@@ -1,4 +1,15 @@
 export const DEFAULT = {
   PORT: 3010,
+  HOST: '127.0.0.1',
   GRACE_CLOSE_DELAY: 500,
+  PLUGIN_TIMEOUT: 5000,
+  USE_SWAGGER: true,
+  APP_ID: 730,
+  CURRENCY: 'EUR',
+  LOG_LEVEL: 'info',
+  REDIS_PORT: 6379,
+  REDIS_HOST: 'localhost',
+  REDIS_DB: 0,
+  SKINPORT_CACHE_TTL_MS: 300000,
+  REQUEST_CACHE_TTL_SEC: 300,
 } as const

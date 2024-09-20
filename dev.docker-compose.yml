@@ -1,0 +1,25 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: dev-runner
+      args:
+        NODE_VERSION: ${NODE_VERSION:-22-alpine}
+        INSTALL_DEV: "true"
+    container_name: nodejs_app_dev
+    # restart: unless-stopped
+    environment:
+      NODE_ENV: development
+      HOST: 0.0.0.0
+      PSQL_HOST: host.docker.internal
+      PSQL_USERNAME: ${PSQL_USERNAME:-postgres}
+      PSQL_PASSWORD: ${PSQL_PASSWORD:-postgres}
+      PSQL_DATABASE: ${PSQL_DATABASE:-postgres}
+      PSQL_PORT: ${PSQL_PORT:-5432}
+      REDIS_HOST: host.docker.internal
+      REDIS_PORT: ${REDIS_PORT:-6379}
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    volumes:
+      - .:/usr/src/app
